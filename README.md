@@ -1,1 +1,2 @@
-# puptok
+# puptok - Puppeteer TikTok Video Uploader
+
