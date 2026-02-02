@@ -1,22 +1,39 @@
+import { ElementHandle } from "puppeteer"
+
 import { ActionFactory } from "../../interfaces"
-import { delay } from "../../utils/delay.util"
 import { TikTokError } from "../../error"
+import { delay } from "../../utils"
 
 export const putCaptionAction: ActionFactory = (caption: string) => {
     return async ({ logger, page, defaultTimeout }) => {
         logger.debug("Putting caption")
 
-        const captionInput = await page.waitForSelector(".caption-editor", { timeout: defaultTimeout })
+        const captionInput = (await page.waitForSelector(".caption-editor", {
+            timeout: defaultTimeout,
+        })) as ElementHandle<HTMLDivElement>
 
         if (!captionInput) {
             logger.error("Caption input not found")
             throw new TikTokError("Caption input not found")
         }
 
-        await delay(5000)
+        let hasText = true
 
-        await captionInput.click({ count: 3 })
-        await captionInput.press("Backspace")
+        await captionInput.click()
+
+        while (hasText) {
+            await captionInput.press("Backspace")
+
+            hasText = await page.evaluate((el) => {
+                const isEmpty =
+                    el.innerText.trim() === "" || el.innerText.trim() === "Compartilhe mais sobre o seu vídeo aqui..."
+                return !isEmpty
+            }, captionInput)
+
+            if (hasText) {
+                await delay(100)
+            }
+        }
 
         await page.keyboard.type(caption)
 

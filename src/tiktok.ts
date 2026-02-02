@@ -1,5 +1,5 @@
 import StealthPlugin from "puppeteer-extra-plugin-stealth"
-import puppeteer from "puppeteer-extra"
+import { PuppeteerExtra } from "puppeteer-extra"
 import { Browser } from "puppeteer"
 import { Logger } from "winston"
 
@@ -17,12 +17,10 @@ import {
 import { needsLoginAction } from "./actions/needs-login.action"
 import { createLogger } from "./helpers/logger.helper"
 import { loginAction } from "./actions/login.action"
-import { delayAction } from "./actions/delay.action"
+import { requireVanillaPuppeteer } from "./utils"
 import { Action } from "./interfaces"
 import path from "node:path"
 import fs from "node:fs"
-
-puppeteer.use(StealthPlugin())
 
 export const defaultTimeout = 10_000
 
@@ -44,11 +42,6 @@ export type TikTokOptions = {
     screenshotOnError: boolean
     htmlContentOnError: boolean
     defaultTimeout?: number
-}
-
-export type LogInOptions = {
-    username: string
-    password: string
 }
 
 export type CreatePostOptions = {
@@ -82,6 +75,10 @@ export class TikTok {
     }
 
     static async create(options: CreateTikTokOptions) {
+        const puppeteer = new PuppeteerExtra(...requireVanillaPuppeteer())
+
+        puppeteer.use(StealthPlugin())
+
         const browser = await puppeteer.launch({
             headless: false,
             executablePath: options.puppeteer.executablePath,
