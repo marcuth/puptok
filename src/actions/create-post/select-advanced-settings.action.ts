@@ -1,5 +1,6 @@
 import { ActionFactory } from "../../interfaces"
 import { TikTokError } from "../../error"
+import { delay } from "../../utils"
 
 export type AdvancedSettings = {
     aiGeneratedContent?: boolean
@@ -23,6 +24,8 @@ export const selectAdvancedSettingsAction: ActionFactory = (advancedSettings: Ad
             await aigcCheckbox.click()
 
             try {
+                await delay(1000)
+
                 const aigcConfirmButton = await page.waitForSelector("xpath///button[.//*[text()='Ativar']]", {
                     timeout: defaultTimeout,
                 })
@@ -34,6 +37,8 @@ export const selectAdvancedSettingsAction: ActionFactory = (advancedSettings: Ad
                 logger.debug("AI generated content confirm button not found")
             }
         }
+
+        await delay(1000)
 
         logger.debug("Advanced settings selected")
     }
