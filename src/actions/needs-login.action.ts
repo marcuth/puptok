@@ -9,7 +9,19 @@ export const needsLoginAction: Action<boolean> = async ({ logger, page, defaultT
         logger.debug("Navigation timeout")
     }
 
-    const needsLogin = page.url().includes("/login") || page.url().includes("/signup")
+    let needsLogin = page.url().includes("/login") || page.url().includes("/signup")
+
+    try {
+        const loginText = await page.waitForSelector("xpath///*[.//*[text()='Entrar no TikTok']]", {
+            timeout: defaultTimeout,
+        })
+
+        if (loginText) {
+            needsLogin = true
+        }
+    } catch (error) {
+        logger.debug("Login text not found")
+    }
 
     logger.debug(`Needs login: ${needsLogin}`)
 
