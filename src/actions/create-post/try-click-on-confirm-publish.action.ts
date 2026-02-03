@@ -1,4 +1,5 @@
 import { Action } from "../../interfaces"
+import { delay } from "../../utils"
 
 export const tryClickOnConfirmPublishAction: Action<void> = async ({ logger, page, defaultTimeout }) => {
     try {
@@ -16,4 +17,6 @@ export const tryClickOnConfirmPublishAction: Action<void> = async ({ logger, pag
         logger.error(error)
         throw error
     }
+
+    await delay(10_000)
 }
