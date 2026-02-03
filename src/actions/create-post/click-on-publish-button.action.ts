@@ -5,9 +5,7 @@ import { delay } from "../../utils"
 export const clickOnPublishButtonAction: Action<void> = async ({ logger, page, defaultTimeout }) => {
     logger.debug("Clicking on publish button")
 
-    const publishButtonSelector = "xpath///button[.//*[text()='Publicar']]"
-
-    const publishButton = await page.waitForSelector(publishButtonSelector, {
+    const publishButton = await page.waitForSelector("xpath///button[.//*[text()='Publicar']]", {
         timeout: defaultTimeout,
     })
 
@@ -16,12 +14,11 @@ export const clickOnPublishButtonAction: Action<void> = async ({ logger, page, d
         throw new TikTokError("Publish button not found")
     }
 
-    await page.evaluate((publishButtonSelector) => {
-        const publishButton = document.querySelector(publishButtonSelector)
+    await page.evaluate((publishButton) => {
         if (publishButton) {
             publishButton.scrollIntoView()
         }
-    }, publishButtonSelector)
+    }, publishButton)
 
     await publishButton.click()
 
