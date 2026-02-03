@@ -4,7 +4,7 @@ export const needsLoginAction: Action<boolean> = async ({ logger, page, defaultT
     logger.debug("Checking if needs login")
 
     try {
-        await page.waitForNavigation({ waitUntil: "domcontentloaded", timeout: defaultTimeout })
+        await page.waitForNavigation({ waitUntil: "networkidle2", timeout: defaultTimeout })
     } catch (error) {
         logger.debug("Navigation timeout")
     }
