@@ -12,7 +12,7 @@ export const needsLoginAction: Action<boolean> = async ({ logger, page, defaultT
     let needsLogin = page.url().includes("/login") || page.url().includes("/signup")
 
     try {
-        const loginText = await page.waitForSelector("xpath///*[.//*[text()='Entrar no TikTok']]", {
+        const loginText = await page.waitForSelector("xpath///*[.//*[text()='Entrar no TikTok'] or .//*[text()='Log in to TikTok']]", {
             timeout: defaultTimeout,
         })
 
